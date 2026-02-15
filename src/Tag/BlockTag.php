@@ -884,13 +884,22 @@ abstract class BlockTag extends Tag
 
 		// mPDF 6  Lists
 		if ($tag === 'LI') {
-			if ($this->mpdf->listlvl == 0) { // in case of malformed HTML code. Example:(...)</p><li>Content</li><p>Paragraph1</p>(...)
+		    // we dont want to fix malformed lists ;)
+			if (false && $this->mpdf->listlvl == 0) { // in case of malformed HTML code. Example:(...)</p><li>Content</li><p>Paragraph1</p>(...)
 				$this->mpdf->listlvl++; // first depth level
 				$this->mpdf->listcounter[$this->mpdf->listlvl] = 0;
 			}
 
 			if (!isset($attr['PAGEBREAKAVOIDCHECKED']) || !$attr['PAGEBREAKAVOIDCHECKED']) {
 				$this->mpdf->listcounter[$this->mpdf->listlvl]++;
+
+				if($this->mpdf->listlvl > 1){
+					$this->mpdf->listlvlprefix[$this->mpdf->listlvl] = $this->mpdf->listlvlprefix[$this->mpdf->listlvl-1] .
+						($this->mpdf->listlvlprefix[$this->mpdf->listlvl-1] ? "." : "") .
+						$this->mpdf->listcounter[$this->mpdf->listlvl-1];
+				} else {
+					$this->mpdf->listlvlprefix[$this->mpdf->listlvl] = "";
+				}
 			}
 
 			$this->mpdf->listitem = [];

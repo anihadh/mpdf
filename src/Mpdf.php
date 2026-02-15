@@ -560,6 +560,7 @@ class Mpdf implements \Psr\Log\LoggerAwareInterface
 	var $listlvl;
 	var $listtype;
 	var $listitem;
+    var $listlvlprefix;
 
 	var $pjustfinished;
 	var $ignorefollowingspaces;
@@ -1523,6 +1524,7 @@ class Mpdf implements \Psr\Log\LoggerAwareInterface
 		$this->listtype = [];
 		$this->listitem = [];
 		$this->listcounter = [];
+        $this->listlvlprefix = [];
 
 		$this->tdbegin = false;
 		$this->table = [];
@@ -15582,6 +15584,10 @@ class Mpdf implements \Psr\Log\LoggerAwareInterface
 			}
 
 			$num = $this->_getStyledNumber($counter, $listitemtype, true);
+			
+			if($this->listlvl > 1) {
+                $num = $this->listlvlprefix[$this->listlvl] . "." . $num;
+			}
 
 			if ($listitemposition == 'inside') {
 				$e = $num . $this->list_number_suffix . $spacer;
